@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { mockPatients } from "@/data/mockPatients";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Search, 
   Filter, 
   FileText, 
   MessageSquare, 
   User, 
-  Download
+  Plus, 
+  Download,
+  CircleAlert,
+  CircleCheck
 } from "lucide-react";
 import { PatientDetails } from "./PatientDetails";
 import { Patient } from "@/types/patient";
@@ -22,29 +25,33 @@ export const PatientsPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]); 
+  const [filteredPatients, setFilteredPatients] = useState([]); 
 
-  useEffect(() => {
-    // Fetch data from API
-    fetch('http://0.0.0.0:8080/api/doctorDashboard', {
-      method: 'GET',
-      headers: {
+  setFilteredPatients(mockPatients.filter(
+    (patient) =>
+      patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      patient.medicalRecordNo.toLowerCase().includes(searchTerm.toLowerCase())
+  ));
+
+  fetch('http://0.0.0.0:8080/api/doctorDashboard', {
+    method: 'GET',
+    headers: {
         'Content-Type': 'application/json'
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Filtering logic for search term
-      setFilteredPatients(data.filter(
-        (patient: Patient) =>
-          patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          patient.medicalRecordNo.toLowerCase().includes(searchTerm.toLowerCase())
-      ));
-    })
-    .catch(error => {
+    },
+  })
+  .then(response => response.json())
+  .then(data => {
+    // data["report pdf"] = ""
+    console.log(data);
+    setFilteredPatients(data.filter(
+      (patient) =>
+        patient.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        patient.medicalRecordNo.toLowerCase().includes(searchTerm.toLowerCase())
+    ));
+  })
+  .catch(error => {
       console.error('Error:', error);
-    });
-  }, [searchTerm]); // Re-run the effect when the searchTerm changes
+  });
 
   const handlePatientClick = (patient: Patient) => {
     setSelectedPatient(patient);
@@ -58,6 +65,10 @@ export const PatientsPage: React.FC = () => {
           <h1 className="text-3xl font-bold text-medical-dark-blue">Patients</h1>
           <p className="text-muted-foreground">Manage and view patient records</p>
         </div>
+        {/* <Button className="bg-medical-purple hover:bg-medical-purple/90"> */}
+        {/*   <Plus className="mr-2 h-4 w-4" /> */}
+        {/*   Add New Patient */}
+        {/* </Button> */}
       </div>
 
       <Card>
@@ -93,7 +104,7 @@ export const PatientsPage: React.FC = () => {
                     <TableHead>Name</TableHead>
                     <TableHead>Age</TableHead>
                     <TableHead>Gender</TableHead>
-                    <TableHead>Details</TableHead>
+                    <TableHead>Status</TableHead>
                     <TableHead>Symptoms</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -123,7 +134,7 @@ export const PatientsPage: React.FC = () => {
                           </Button>
                         </div>
                       </TableCell>
-                      <TableCell>{patient.symptoms ? patient.symptoms.join(", ") : "\t-\t"}</TableCell>
+                      <TableCell>{patient.symptoms}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -144,4 +155,3 @@ export const PatientsPage: React.FC = () => {
     </div>
   );
 };
-

@@ -61,7 +61,6 @@ export const PatientDetails: React.FC<PatientDetailsProps> = ({ patient }) => {
                   </Avatar>
                   <div>
                     <CardTitle className="text-2xl">{patient.name}</CardTitle>
-                    <CardDescription>MRN: {patient.medicalRecordNo}</CardDescription>
                     <div className="flex items-center gap-2 mt-1">
                       <Badge
                         className={
@@ -93,10 +92,6 @@ export const PatientDetails: React.FC<PatientDetailsProps> = ({ patient }) => {
                 <div>
                   <h3 className="font-semibold mb-2">Personal Information</h3>
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Date of Birth:</span>
-                      <span>{patient.dob}</span>
-                    </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Age:</span>
                       <span>{patient.age} years</span>
@@ -380,12 +375,6 @@ export const PatientDetails: React.FC<PatientDetailsProps> = ({ patient }) => {
                 <div className="grid grid-cols-2 gap-2 text-sm">
                   <div>
                     <span className="font-medium">Name:</span> {patient.name}
-                  </div>
-                  <div>
-                    <span className="font-medium">MRN:</span> {patient.medicalRecordNo}
-                  </div>
-                  <div>
-                    <span className="font-medium">DOB:</span> {patient.dob}
                   </div>
                   <div>
                     <span className="font-medium">Age:</span> {patient.age}
